@@ -75,6 +75,9 @@ MY_HOSTNAME_STATUS_HISTORY_TEMP_SORT="/tmp/status_hostname_history_sort.txt"
 # Minimum downtime in seconds to display in past incidents
 MY_MIN_DOWN_TIME="60"
 
+# Show Informational Section
+MY_SHOW_INFO_SECTION="false"
+
 # CSS Stylesheet for the status page
 MY_STATUS_STYLESHEET="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css"
 
@@ -700,6 +703,14 @@ function item_history() {
 	echo "</li>"
 }
 
+
+function info_rows() {
+	echo '<li class="list-group-item d-flex justify-content-between align-items-center">' >> "$MY_STATUS_HTML"
+	echo '	System Uptime' >> "$MY_STATUS_HTML"
+	echo "	<span class="badge-pill">$(uptime --pretty)</i></span>" >> "$MY_STATUS_HTML"
+	echo '</li>' >> "$MY_STATUS_HTML"
+}
+
 ################################################################################
 # MAIN
 ################################################################################
@@ -1071,6 +1082,17 @@ EOF
 	for MY_AVAILABLE_ITEM in "${MY_AVAILABLE_ITEMS[@]}"; do
 		echo "$MY_AVAILABLE_ITEM" >> "$MY_STATUS_HTML"
 	done
+	echo "</ul></div>" >> "$MY_STATUS_HTML"
+fi
+
+# Informational to HTML
+if [ "$MY_SHOW_INFO_SECTION" == "true" ]; then
+	cat >> "$MY_STATUS_HTML" << EOF
+<div class="my-3">
+	<ul class="list-group">
+		<li class="list-group-item list-group-item-info">Informational</li>
+EOF
+	info_rows
 	echo "</ul></div>" >> "$MY_STATUS_HTML"
 fi
 
